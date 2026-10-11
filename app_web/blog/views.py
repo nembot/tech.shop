@@ -43,15 +43,9 @@ def detail(request, id_article):
         messages.error(request, "Cet article n'est pas publié pour le moment.")
         return redirect('home')
     category = article.category
-    
-    # Filtre les articles de la même catégorie en excluant celui qu'on regarde déjà (limite à 5)
-    article_relation = Article.objects.filter(category=category).exclude(id=id_article)[:5]
-    
-    # Debug : vérifie en console si des articles similaires existent
-    if article_relation.exists():
-        print(f"Image du premier article similaire : {article_relation[0].image.url}")
-    else:
-        print("Aucun article similaire trouvé.")
+
+    # Filtre les articles publiés de la même catégorie en excluant celui qu'on regarde déjà (limite à 5)
+    article_relation = Article.objects.filter(category=category, is_published=True).exclude(id=id_article)[:5]
 
     return render(request, 'detail.html', {
         "article": article,
@@ -277,6 +271,8 @@ def liker_article(request, id_article):
     if not request.user.is_authenticated:
         messages.error(request, "Connectez-vous pour ajouter un favori.")
         return redirect('connexion')
+    if request.method != 'POST':
+        return redirect('detail', id_article=article.id)
     if article.likes.filter(id=request.user.id).exists():
         article.likes.remove(request.user) # Enlever le like si déjà présent
         messages.info(request, f"« {article.titre} » retiré de vos favoris.")
@@ -309,7 +305,15 @@ def supprimer_commentaire(request, id_commentaire):
     # On récupère le commentaire
     commentaire = get_object_or_404(Commentaire, id=id_commentaire)
     id_article = commentaire.article.id # On garde l'ID pour rediriger vers la page de l'article
-    
+
+    if not request.user.is_authenticated:
+        messages.error(request, "Connectez-vous pour gérer vos commentaires.")
+        return redirect('connexion')
+
+    if request.method != 'POST':
+        messages.warning(request, "Utilisez le bouton de suppression pour retirer un commentaire.")
+        return redirect('detail', id_article=id_article)
+
     # Sécurité : Seul l'auteur peut supprimer
     if commentaire.user == request.user:
         commentaire.delete()

@@ -18,6 +18,9 @@ def app_admin(request):
 
 
 def user_article(request):
+    if not request.user.is_authenticated:
+        messages.info(request, "Connectez-vous pour voir vos articles.")
+        return redirect('connexion')
     # On filtre par 'user' (le nom exact dans ton modèle Article)
     articles_liste = Article.objects.filter(user=request.user).select_related('category').order_by('-id')
 
@@ -25,10 +28,6 @@ def user_article(request):
     nb_total = articles_liste.count()
     nb_publies = articles_liste.filter(is_published=True).count()
     nb_depublies = nb_total - nb_publies
-
-    # DEBUG : Affiche dans le terminal pour voir si Django trouve quelque chose
-    print(f"Utilisateur connecté : {request.user}")
-    print(f"Nombre d'articles trouvés pour lui : {nb_total}")
 
     return render(request, 'my_article.html', {
         'list': articles_liste,
@@ -61,6 +60,9 @@ class UpdateArticle(UpdateView):
     template_name = "modifier-article.html" # Utilise ton nouveau template ici
     success_url = reverse_lazy('my-article')
 
+    def get_queryset(self):
+        return Article.objects.filter(user=self.request.user)
+
     def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, f"L'article « {self.object.titre} » a été modifié avec succès.")
@@ -71,6 +73,9 @@ class DeleteArticle(DeleteView):
     model = Article
     template_name = "confirm-delete.html" # Un petit template de confirmation
     success_url = reverse_lazy('my-article')
+
+    def get_queryset(self):
+        return Article.objects.filter(user=self.request.user)
 
     def delete(self, request, *args, **kwargs):
         titre = self.get_object().titre
@@ -85,14 +90,22 @@ class DeleteArticle(DeleteView):
 
 
 ########### pour supprimer les achats et ventes #######
+@login_required
 def supprimer_achat(request, pk):
+    if request.method != 'POST':
+        messages.warning(request, "Utilisez le bouton Annuler pour annuler une commande.")
+        return redirect('mes_commandes')
     # Un client annule sa propre commande
     commande = get_object_or_404(Commande, id=pk, client=request.user)
     commande.delete()
     messages.success(request, "Commande annulée.")
     return redirect('mes_commandes')
 
+@login_required
 def supprimer_vente(request, pk):
+    if request.method != 'POST':
+        messages.warning(request, "Utilisez le bouton de suppression pour retirer une vente.")
+        return redirect('mes_commandes')
     # Un annonceur supprime une notification de vente de sa liste
     vente = get_object_or_404(CommandeArticle, id=pk, article__user=request.user)
     vente.delete()
@@ -102,6 +115,9 @@ def supprimer_vente(request, pk):
 ######### pour les cadrants  des ventes #########
 
 def mon_espace_commandes(request):
+    if not request.user.is_authenticated:
+        messages.info(request, "Connectez-vous pour voir vos commandes.")
+        return redirect('connexion')
     # --- DONNÉES ACHATS (Ce que j'ai commandé) ---
     mes_achats = Commande.objects.filter(client=request.user).order_by('-date_commande')
     
@@ -134,6 +150,9 @@ def mon_espace_commandes(request):
 ######### pour les cadrants  des achats #########
 
 def mes_achats_view(request):
+    if not request.user.is_authenticated:
+        messages.info(request, "Connectez-vous pour voir vos achats.")
+        return redirect('connexion')
     # On récupère toutes les commandes passées par l'utilisateur connecté
     mes_achats = Commande.objects.filter(client=request.user).order_by('-date_commande')
     
@@ -157,7 +176,10 @@ def mes_achats_view(request):
 
 @login_required
 def toggle_publish(request, pk):
-    """Publie / dépublie un article (uniquement le propriétaire)."""
+    """Publie / dépublie un article (uniquement le propriétaire, via POST)."""
+    if request.method != 'POST':
+        messages.warning(request, "Utilisez le bouton Publier / Dépublier de vos articles.")
+        return redirect('my-article')
     article = get_object_or_404(Article, id=pk, user=request.user)
     article.is_published = not article.is_published
     article.save()

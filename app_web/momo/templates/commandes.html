@@ -1,33 +1,34 @@
 {% extends 'base.html' %}
+{% block title %}Mes ventes — Tech.Shop{% endblock %}
 {% block content %}
 <div class="container my-5">
-    <h2 class="fw-bold mb-4">Tableau de bord des ventes</h2>
+    <h1 class="fw-bold mb-4 h2">Tableau de bord des ventes</h1>
 
-    <div class="row mb-5">
+    <div class="row mb-5 g-3">
         <div class="col-md-4">
-            <div class="card bg-primary text-white text-center p-3 shadow-sm">
+            <div class="card bg-primary text-white text-center p-3 shadow-sm h-100">
                 <div class="card-body">
-                    <i class="fas fa-shopping-cart fa-3x mb-3"></i>
-                    <h5 class="card-title text-uppercase small">Commandes reçues</h5>
-                    <h2 class="display-6 fw-bold">{{ nb_commandes_ventes }}</h2>
+                    <i class="fas fa-shopping-cart fa-3x mb-3" aria-hidden="true"></i>
+                    <h2 class="card-title text-uppercase small h6">Commandes reçues</h2>
+                    <p class="display-6 fw-bold mb-0">{{ nb_commandes_ventes }}</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card bg-success text-white text-center p-3 shadow-sm">
+            <div class="card bg-success text-white text-center p-3 shadow-sm h-100">
                 <div class="card-body">
-                    <i class="fas fa-wallet fa-3x mb-3"></i>
-                    <h5 class="card-title text-uppercase small">Revenu Total</h5>
-                    <h2 class="display-6 fw-bold">{{ total_revenu }} <small>FCFA</small></h2>
+                    <i class="fas fa-wallet fa-3x mb-3" aria-hidden="true"></i>
+                    <h2 class="card-title text-uppercase small h6">Revenu Total</h2>
+                    <p class="display-6 fw-bold mb-0">{{ total_revenu }} <small>FCFA</small></p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card bg-info text-white text-center p-3 shadow-sm">
+            <div class="card bg-info text-white text-center p-3 shadow-sm h-100">
                 <div class="card-body">
-                    <i class="fas fa-box-open fa-3x mb-3"></i>
-                    <h5 class="card-title text-uppercase small">Produits vendus</h5>
-                    <h2 class="display-6 fw-bold">{{ nb_produits_vendus }}</h2>
+                    <i class="fas fa-box-open fa-3x mb-3" aria-hidden="true"></i>
+                    <h2 class="card-title text-uppercase small h6">Produits vendus</h2>
+                    <p class="display-6 fw-bold mb-0">{{ nb_produits_vendus }}</p>
                 </div>
             </div>
         </div>
@@ -35,37 +36,48 @@
 
     <div class="card shadow-0 border">
         <div class="card-header bg-white py-3">
-            <h5 class="mb-0 fw-bold">Détails des ventes</h5>
+            <h2 class="mb-0 fw-bold h5">Détails des ventes</h2>
         </div>
         <div class="card-body">
+            {% if mes_ventes %}
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
+                    <caption class="visually-hidden">Ventes reçues : client, article, livraison et date</caption>
                     <thead class="table-light">
                         <tr>
-                            <th>Client</th>
-                            <th>Article</th>
-                            <th>Lieu de livraison</th>
-                            <th>Date</th>
-                            <th class="text-center">Action</th>
+                            <th scope="col">Client</th>
+                            <th scope="col">Article</th>
+                            <th scope="col">Lieu de livraison</th>
+                            <th scope="col">Date</th>
+                            <th scope="col" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for vente in mes_ventes %}
                         <tr>
                             <td>{{ vente.commande.client.username }}</td>
-                            <td><strong>{{ vente.article.titre }}</strong></td>
+                            <td><strong>{{ vente.article.titre }}</strong><br><small class="text-muted">x{{ vente.quantite }} — {{ vente.get_total }} FCFA</small></td>
                             <td>{{ vente.commande.adresse_livraison }}</td>
                             <td>{{ vente.date_ajoute|date:"d M Y" }}</td>
                             <td class="text-center">
-                                <a href="{% url 'supprimer_vente' vente.id %}" class="btn btn-sm btn-floating btn-danger">
-                                    <i class="fas fa-trash"></i>
-                                </a>
+                                <form action="{% url 'supprimer_vente' vente.id %}" method="post" class="d-inline" onsubmit="return confirm('Retirer cette vente de votre historique ?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-floating btn-danger" aria-label="Retirer la vente {{ vente.article.titre }} à {{ vente.commande.client.username }}">
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+            {% else %}
+            <div class="text-center py-5">
+                <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png" width="80" height="80" class="mb-3 opacity-50" alt="" loading="lazy" decoding="async">
+                <p class="text-muted mb-0">Aucune vente pour le moment. Publiez un article pour recevoir vos premières commandes.</p>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

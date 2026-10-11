@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
+{% block title %}Statistiques — Tech.Shop{% endblock %}
 {% block content %}
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2 class="fw-bold mb-0"><i class="fas fa-chart-line me-2 text-primary"></i>Statistiques</h2>
-        <div class="d-flex gap-2">
+        <h1 class="fw-bold mb-0 h2"><i class="fas fa-chart-line me-2 text-primary" aria-hidden="true"></i>Statistiques</h1>
+        <div class="ts-actions">
             <a href="{% url 'my-article' %}" class="btn btn-outline-primary btn-sm">Mes articles</a>
             <a href="{% url 'mes_commandes' %}" class="btn btn-outline-dark btn-sm">Mes ventes</a>
             <a href="{% url 'mes_achats' %}" class="btn btn-outline-secondary btn-sm">Mes achats</a>
@@ -12,41 +13,41 @@
     <p class="text-muted small">Chiffres calculés en temps réel depuis la base de données pour <strong>{{ user.username }}</strong>.</p>
 
     <!-- Ligne 1 : Mes articles -->
-    <h5 class="fw-bold mt-4 mb-3">Mes articles</h5>
+    <h2 class="fw-bold mt-4 mb-3 h5">Mes articles</h2>
     <div class="row mb-4 text-center g-3">
-        <div class="col-md-3">
+        <div class="col-md-3 col-6">
             <div class="card shadow-0 border rounded-4 h-100">
                 <div class="card-body">
-                    <i class="fas fa-boxes fa-2x text-primary mb-2"></i>
+                    <i class="fas fa-boxes fa-2x text-primary mb-2" aria-hidden="true"></i>
                     <p class="text-uppercase small text-muted mb-1">Total articles</p>
-                    <h2 class="fw-bold mb-0" id="stat-total-articles">{{ nb_articles_total }}</h2>
+                    <p class="fw-bold display-6 mb-0" id="stat-total-articles">{{ nb_articles_total }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-6">
             <div class="card shadow-0 border rounded-4 h-100 bg-success text-white">
                 <div class="card-body">
-                    <i class="fas fa-globe fa-2x mb-2"></i>
+                    <i class="fas fa-globe fa-2x mb-2" aria-hidden="true"></i>
                     <p class="text-uppercase small mb-1">Publiés</p>
-                    <h2 class="fw-bold mb-0" id="stat-publies">{{ nb_articles_publies }}</h2>
+                    <p class="fw-bold display-6 mb-0" id="stat-publies">{{ nb_articles_publies }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-6">
             <div class="card shadow-0 border rounded-4 h-100 bg-secondary text-white">
                 <div class="card-body">
-                    <i class="fas fa-eye-slash fa-2x mb-2"></i>
+                    <i class="fas fa-eye-slash fa-2x mb-2" aria-hidden="true"></i>
                     <p class="text-uppercase small mb-1">Dépubliés</p>
-                    <h2 class="fw-bold mb-0" id="stat-depublies">{{ nb_articles_depublies }}</h2>
+                    <p class="fw-bold display-6 mb-0" id="stat-depublies">{{ nb_articles_depublies }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-6">
             <div class="card shadow-0 border rounded-4 h-100">
                 <div class="card-body">
-                    <i class="fas fa-warehouse fa-2x text-warning mb-2"></i>
+                    <i class="fas fa-warehouse fa-2x text-warning mb-2" aria-hidden="true"></i>
                     <p class="text-uppercase small text-muted mb-1">Stock total</p>
-                    <h2 class="fw-bold mb-0" id="stat-stock">{{ stock_total }}</h2>
+                    <p class="fw-bold display-6 mb-0" id="stat-stock">{{ stock_total }}</p>
                     <small class="text-muted">Valeur : {{ valeur_stock }} FCFA</small>
                 </div>
             </div>
@@ -54,14 +55,14 @@
     </div>
 
     <!-- Ligne 2 : Ventes -->
-    <h5 class="fw-bold mt-4 mb-3">Mes ventes</h5>
+    <h2 class="fw-bold mt-4 mb-3 h5">Mes ventes</h2>
     <div class="row mb-4 text-center g-3">
         <div class="col-md-4">
             <div class="card bg-primary text-white text-center p-2 shadow-sm rounded-4 h-100">
                 <div class="card-body">
-                    <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                    <i class="fas fa-shopping-cart fa-2x mb-2" aria-hidden="true"></i>
                     <p class="text-uppercase small mb-1">Commandes reçues</p>
-                    <h2 class="fw-bold mb-0" id="stat-commandes-ventes">{{ nb_commandes_ventes }}</h2>
+                    <p class="fw-bold display-6 mb-0" id="stat-commandes-ventes">{{ nb_commandes_ventes }}</p>
                     <small>{{ nb_ventes_lignes }} ligne(s) de vente</small>
                 </div>
             </div>
@@ -69,18 +70,18 @@
         <div class="col-md-4">
             <div class="card bg-success text-white text-center p-2 shadow-sm rounded-4 h-100">
                 <div class="card-body">
-                    <i class="fas fa-wallet fa-2x mb-2"></i>
+                    <i class="fas fa-wallet fa-2x mb-2" aria-hidden="true"></i>
                     <p class="text-uppercase small mb-1">Revenu total</p>
-                    <h2 class="fw-bold mb-0" id="stat-revenu">{{ total_revenu }} <small>FCFA</small></h2>
+                    <p class="fw-bold display-6 mb-0" id="stat-revenu">{{ total_revenu }} <small>FCFA</small></p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card bg-info text-white text-center p-2 shadow-sm rounded-4 h-100">
                 <div class="card-body">
-                    <i class="fas fa-box-open fa-2x mb-2"></i>
+                    <i class="fas fa-box-open fa-2x mb-2" aria-hidden="true"></i>
                     <p class="text-uppercase small mb-1">Produits vendus</p>
-                    <h2 class="fw-bold mb-0" id="stat-vendus">{{ nb_produits_vendus }}</h2>
+                    <p class="fw-bold display-6 mb-0" id="stat-vendus">{{ nb_produits_vendus }}</p>
                 </div>
             </div>
         </div>
@@ -91,11 +92,11 @@
         <div class="col-md-6">
             <div class="card shadow-0 border rounded-4 h-100">
                 <div class="card-body">
-                    <h6 class="fw-bold mb-3"><i class="fas fa-heart me-2 text-danger"></i>Engagement reçu</h6>
+                    <h2 class="fw-bold mb-3 h6"><i class="fas fa-heart me-2 text-danger" aria-hidden="true"></i>Engagement reçu</h2>
                     <div class="d-flex justify-content-around text-center">
-                        <div><h3 class="fw-bold text-danger mb-0" id="stat-likes">{{ likes_recus }}</h3><small class="text-muted">Likes</small></div>
-                        <div><h3 class="fw-bold text-primary mb-0" id="stat-commentaires">{{ commentaires_recus }}</h3><small class="text-muted">Commentaires</small></div>
-                        <div><h3 class="fw-bold mb-0">{{ nb_articles_boutique }}</h3><small class="text-muted">Articles en boutique</small></div>
+                        <div><p class="fw-bold h3 text-danger mb-0" id="stat-likes">{{ likes_recus }}</p><small class="text-muted">Likes</small></div>
+                        <div><p class="fw-bold h3 text-primary mb-0" id="stat-commentaires">{{ commentaires_recus }}</p><small class="text-muted">Commentaires</small></div>
+                        <div><p class="fw-bold h3 mb-0">{{ nb_articles_boutique }}</p><small class="text-muted">Articles en boutique</small></div>
                     </div>
                 </div>
             </div>
@@ -103,11 +104,11 @@
         <div class="col-md-6">
             <div class="card shadow-0 border rounded-4 h-100">
                 <div class="card-body">
-                    <h6 class="fw-bold mb-3"><i class="fas fa-shopping-bag me-2"></i>Mes achats</h6>
+                    <h2 class="fw-bold mb-3 h6"><i class="fas fa-shopping-bag me-2" aria-hidden="true"></i>Mes achats</h2>
                     <div class="d-flex justify-content-around text-center">
-                        <div><h3 class="fw-bold mb-0" id="stat-achats-nb">{{ nb_commandes_achats }}</h3><small class="text-muted">Commandes</small></div>
-                        <div><h3 class="fw-bold text-warning mb-0" id="stat-depense">{{ total_depense }}</h3><small class="text-muted">FCFA dépensés</small></div>
-                        <div><h3 class="fw-bold mb-0">{{ nb_produits_achetes }}</h3><small class="text-muted">Produits achetés</small></div>
+                        <div><p class="fw-bold h3 mb-0" id="stat-achats-nb">{{ nb_commandes_achats }}</p><small class="text-muted">Commandes</small></div>
+                        <div><p class="fw-bold h3 text-warning mb-0" id="stat-depense">{{ total_depense }}</p><small class="text-muted">FCFA dépensés</small></div>
+                        <div><p class="fw-bold h3 mb-0">{{ nb_produits_achetes }}</p><small class="text-muted">Produits achetés</small></div>
                     </div>
                 </div>
             </div>
@@ -119,9 +120,9 @@
         <div class="col-md-6">
             <div class="card shadow-0 border rounded-4 h-100">
                 <div class="card-body">
-                    <h6 class="fw-bold mb-3">Top 5 articles les plus vendus</h6>
+                    <h2 class="fw-bold mb-3 h6">Top 5 articles les plus vendus</h2>
                     {% if top_vendus %}
-                    <canvas id="chartTopVendus" height="220"></canvas>
+                    <canvas id="chartTopVendus" height="220" role="img" aria-label="Graphique en barres des 5 articles les plus vendus"></canvas>
                     <ul class="list-group list-group-flush mt-3 small">
                         {% for t in top_vendus %}
                         <li class="list-group-item d-flex justify-content-between"><span>{{ t.article__titre }}</span><strong>{{ t.qte }} vendu(s)</strong></li>
@@ -136,9 +137,9 @@
         <div class="col-md-6">
             <div class="card shadow-0 border rounded-4 h-100">
                 <div class="card-body">
-                    <h6 class="fw-bold mb-3">Mes articles par catégorie</h6>
+                    <h2 class="fw-bold mb-3 h6">Mes articles par catégorie</h2>
                     {% if par_categorie %}
-                    <canvas id="chartCategories" height="220"></canvas>
+                    <canvas id="chartCategories" height="220" role="img" aria-label="Graphique en anneau de vos articles par catégorie"></canvas>
                     <ul class="list-group list-group-flush mt-3 small">
                         {% for c in par_categorie %}
                         <li class="list-group-item d-flex justify-content-between"><span>{{ c.category__nom }}</span><strong>{{ c.n }}</strong></li>
@@ -153,10 +154,12 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% if top_vendus or par_categorie %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 <script>
-(function () {
+window.addEventListener('load', function () {
     try {
+        if (typeof Chart === 'undefined') return;
         var c1 = document.getElementById('chartTopVendus');
         if (c1) {
             new Chart(c1, {
@@ -174,6 +177,7 @@
             });
         }
     } catch (e) { console.warn('Charts indisponibles', e); }
-})();
+});
 </script>
+{% endif %}
 {% endblock %}

@@ -1,42 +1,56 @@
 <!DOCTYPE html>
-{% load static %} 
-<html lang="en">
+{% load static %}
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier l'article</title>
+    <meta name="description" content="Modifiez votre article {{ object.titre }} sur Tech.Shop.">
+    <title>Modifier {{ object.titre }} — Tech.Shop</title>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/techshop.css' %}">
 </head>
 <body>
+    <a class="visually-hidden-focusable" href="#contenu">Aller au formulaire</a>
     {% include 'navmomo.html'%}
     {% include '_toasts.html' %}
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h2 class="text-center my-3"> Modifier l'article : {{ object.titre }} </h2>
-                
-                <form method="post" enctype="multipart/form-data">
+    <main id="contenu">
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h1 class="text-center my-3 h2">Modifier l'article : {{ object.titre }}</h1>
+
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <form method="post" enctype="multipart/form-data" class="card border-0 shadow-0 p-4">
                     {% csrf_token %}
-                    
+
                     {% for field in form %}
                         <div class="mb-3">
-                            <label class="form-label">{{ field.label }}</label>
+                            <label class="form-label fw-bold {% if field.field.required %}ts-required{% endif %}" for="{{ field.id_for_label }}">{{ field.label }}</label>
                             {{ field }}
+                            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                            {% for error in field.errors %}<div class="text-danger small" role="alert">{{ error }}</div>{% endfor %}
                         </div>
                     {% endfor %}
 
-                    <button type="submit" class="btn btn-warning btn-block my-3"> 
-                        <i class="fas fa-edit"></i> METTRE À JOUR 
-                    </button>
-                    <a href="{% url 'my-article' %}" class="btn btn-light btn-block">Annuler</a>
+                    <div class="ts-actions">
+                        <button type="submit" class="btn btn-warning my-3 flex-fill">
+                            <i class="fas fa-edit" aria-hidden="true"></i> Mettre à jour
+                        </button>
+                        <a href="{% url 'my-article' %}" class="btn btn-light my-3">Annuler</a>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
+    </main>
 
-    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}"></script>
+    {% include 'footer.html' %}
+    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}" defer></script>
 </body>
 </html>

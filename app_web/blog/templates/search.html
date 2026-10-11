@@ -1,32 +1,37 @@
 <!DOCTYPE html>
-{% load static %} 
+{% load static %}
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Résultats de recherche</title>
+    <meta name="description" content="Résultats de recherche Tech.Shop par nom et catégorie.">
+    <title>Résultats de recherche — Tech.Shop</title>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
     <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/techshop.css' %}" />
 </head>
 <body>
-    {% include 'Nav.html' %} 
+    <a class="visually-hidden-focusable" href="#contenu">Aller au contenu</a>
+    {% include 'Nav.html' %}
     {% include '_toasts.html' %}
 
-    {% block content %}
-    <div class="container">
-     <h2 class="text-center my-3">Résultats de recherche</h2>
+    <main id="contenu">
+    <div class="container my-4">
+     <h1 class="text-center my-3 h2">Résultats de recherche</h1>
 
      <!-- Filtres nom + catégorie -->
-     <form method="get" action="{% url 'search' %}" class="card shadow-0 border p-3 mb-4">
+     <form method="get" action="{% url 'search' %}" class="card shadow-0 border p-3 mb-4" role="search" aria-label="Filtrer les articles">
          <div class="row g-2 align-items-end">
              <div class="col-md-6">
-                 <label class="form-label small text-muted mb-1">Nom de l'article</label>
-                 <input class="form-control" type="search" name="article" placeholder="Nom..." value="{{ q|default:'' }}">
+                 <label class="form-label small text-muted mb-1" for="f-nom">Nom de l'article</label>
+                 <input id="f-nom" class="form-control" type="search" name="article" placeholder="Nom..." value="{{ q|default:'' }}" autocomplete="off">
              </div>
              <div class="col-md-4">
-                 <label class="form-label small text-muted mb-1">Catégorie</label>
-                 <select name="categorie" class="form-select">
+                 <label class="form-label small text-muted mb-1" for="f-cat">Catégorie</label>
+                 <select id="f-cat" name="categorie" class="form-select">
                      <option value="">Toutes les catégories</option>
                      {% for cat in categories %}
                          <option value="{{ cat.id }}" {% if categorie_active == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.nom }}</option>
@@ -34,49 +39,49 @@
                  </select>
              </div>
              <div class="col-md-2 d-flex gap-2">
-                 <button type="submit" class="btn btn-primary flex-fill"><i class="fas fa-search me-1"></i>Chercher</button>
-                 <a href="{% url 'home' %}" class="btn btn-outline-secondary" title="Tout voir"><i class="fas fa-times"></i></a>
+                 <button type="submit" class="btn btn-primary flex-fill"><i class="fas fa-search me-1" aria-hidden="true"></i>Chercher</button>
+                 <a href="{% url 'home' %}" class="btn btn-outline-secondary" title="Tout voir" aria-label="Tout voir"><i class="fas fa-times" aria-hidden="true"></i></a>
              </div>
          </div>
-         <div class="mt-2 small text-muted">{{ liste_article|length }} résultat(s){% if q %} pour « <strong>{{ q }}</strong> »{% endif %}</div>
+         <div class="mt-2 small text-muted" role="status">{{ liste_article|length }} résultat(s){% if q %} pour « <strong>{{ q }}</strong> »{% endif %}</div>
      </form>
 
      <div class="row g-4">
         {% for article in liste_article %}
         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card h-100 shadow-sm">
+                <article class="card h-100 shadow-sm">
                     <div class="bg-image hover-overlay" data-mdb-ripple-init data-mdb-ripple-color="light">
                        {% if article.image %}
-                           <img src="{{ article.image.url }}" class="img-fluid w-100" style="height:200px;object-fit:contain;padding:15px;"/>
+                           <img src="{{ article.image.url }}" class="img-fluid w-100 ts-card-img" alt="{{ article.titre }}" loading="lazy" decoding="async" width="400" height="200"/>
                        {% else %}
-                           <img src="{% static 'images/default.jpg' %}" class="img-fluid w-100" style="height:200px;object-fit:contain;padding:15px;"/>
+                           <img src="{% static 'images/default.jpg' %}" class="img-fluid w-100 ts-card-img" alt="Image par défaut pour {{ article.titre }}" loading="lazy" decoding="async" width="400" height="200"/>
                        {% endif %}
-                       <a href="{% url 'detail' article.id %}">
-                           <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                        </a>
+                        <a href="{% url 'detail' article.id %}" aria-label="Voir le détail de {{ article.titre }}">
+                            <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                         </a>
                     </div>
                     <div class="card-body d-flex flex-column">
-                       <h5 class="card-title">{{ article.titre }}</h5>
-                       <p class="small text-muted mb-1"><i class="fas fa-tag me-1"></i>{{ article.category.nom }}</p>
-                       <p class="card-text small text-truncate">{{ article.desc }}</p>
-                       <p class="card-text small text-muted">publié il y a {{ article.created_at|timesince }}</p>
-                       <p class="fw-bold text-primary">{{ article.prix }} FCFA</p>
-                       <a href="{% url 'detail' article.id %}" class="btn btn-primary mt-auto" data-mdb-ripple-init>Voir le détail</a>
-                    </div>
-                </div>
+                        <h2 class="card-title h5">{{ article.titre }}</h2>
+                        <p class="small text-muted mb-1"><i class="fas fa-tag me-1" aria-hidden="true"></i>{{ article.category.nom }}</p>
+                        <p class="card-text small text-truncate">{{ article.desc }}</p>
+                        <p class="card-text small text-muted">publié il y a {{ article.created_at|timesince }}</p>
+                        <p class="fw-bold ts-price">{{ article.prix }} FCFA</p>
+                        <a href="{% url 'detail' article.id %}" class="btn btn-primary mt-auto" data-mdb-ripple-init>Voir le détail</a>
+                     </div>
+                </article>
             </div>
         {% empty %}
         <div class="col-12 text-center py-5">
-            <h5 class="fw-bold">Aucun article trouvé</h5>
+            <h2 class="fw-bold h5">Aucun article trouvé</h2>
             <p class="text-muted">Modifiez le nom ou la catégorie puis relancez la recherche.</p>
             <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Voir tous les articles</a>
         </div>
         {% endfor %}
         </div>
-    </div>  
-    {% endblock %}
+    </div>
+    </main>
 
-    {% include 'footer.html' %} 
-    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}"></script>
+    {% include 'footer.html' %}
+    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}" defer></script>
 </body>
 </html>

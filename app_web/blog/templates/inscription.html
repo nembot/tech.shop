@@ -1,155 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentification</title>
+    <meta name="description" content="Créez votre compte Tech.Shop pour acheter et vendre.">
+    <title>Inscription — Tech.Shop</title>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/techshop.css' %}" />
 </head>
-<body>
+<body class="ts-auth-body">
+<a class="visually-hidden-focusable" href="#inscription-form">Aller au formulaire</a>
 {% include '_toasts.html' %}
-<div class="container">
-    <div class="form-container"> <form method="post" action="{% url 'inscription' %}">
-             {% csrf_token %}
-             <h1>Inscription</h1> 
-             
-             <div class="django-form">
-                {{ form.as_p }}
-             </div>
+<main class="ts-auth-card">
+     <form method="post" action="{% url 'inscription' %}" id="inscription-form">
+              {% csrf_token %}
+              <h1>Inscription</h1>
 
-             <button type="submit"> S'inscrire</button>
+              {% if form.non_field_errors %}
+              <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+              {% endif %}
+
+              <div class="django-form">
+                 {% for field in form %}
+                 <div class="mb-2">
+                     <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                     {{ field }}
+                     {% if field.help_text %}<p class="ts-help">{{ field.help_text }}</p>{% endif %}
+                     {% for error in field.errors %}<p class="ts-field-error" role="alert">{{ error }}</p>{% endfor %}
+                 </div>
+                 {% endfor %}
+              </div>
+
+              <button class="btn-auth" type="submit">S'inscrire</button>
         </form>
-         <p class="link">Déjà inscrit ? <a href="{% url 'connexion' %}">Se connecter</a></p>
-    </div>
-</div>
-
-    <style>
-        /* CSS */
-        /* Import Google font - Poppins */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        h1 {
-            margin: 20px 0;
-        }
-
-        body {
-            min-height: 100vh;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .container {
-            width: 400px;
-            background: #fff;
-            border-radius: 7px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .container .form {
-            padding: 30px;
-        }
-
-        label {
-            padding: 10px 0;
-            color: #009579;
-            cursor: pointer;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            font-size: 17px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            outline: none;
-            margin-bottom: 15px;
-            margin-top: 10px;
-        }
-
-        a {
-            font-size: 16px;
-            color: #009579;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        button {
-            color: #fff;
-            background: #009579;
-            width: 100%;
-            padding: 10px;
-            font-size: 17px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 6px;
-            outline: none;
-        }
-
-        button:hover {
-            background: #006653;
-        }
-
-        .link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .error {
-            background-color: red;
-            color: #fff;
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 14px;      
-            text-align: center; 
-        }
-        ul {
-            list-style: none;
-            color: red;
-        }
-        /* Empêche les éléments de s'aligner bizarrement */
-.django-form p {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 15px;
-    width: 100%;
-}
-
-/* Style pour les textes d'aide (les petits textes en gris/rouge) */
-.helptext, .errorlist {
-    font-size: 12px;
-    color: #666;
-    margin-top: 5px;
-    display: block;
-}
-
-.errorlist {
-    color: red;
-    padding: 0;
-}
-
-/* Ajuste ton container pour qu'il s'agrandisse selon le contenu */
-.container {
-    width: 100%;
-    max-width: 450px; /* Plus flexible */
-    background: #fff;
-    padding: 20px;
-    border-radius: 7px;
-    /* Enlève la hauteur fixe si tu en avais une */
-}
-
-    </style>
+         <p class="ts-auth-link">Déjà inscrit ? <a href="{% url 'connexion' %}">Se connecter</a></p>
+         <p class="ts-auth-link"><a href="{% url 'home' %}">← Retour à la boutique</a></p>
+</main>
 </body>
 </html>

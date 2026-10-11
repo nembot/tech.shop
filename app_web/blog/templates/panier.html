@@ -4,32 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Votre panier Tech.Shop : récapitulatif, livraison et confirmation de commande.">
     <title>Mon Panier - Tech.Shop</title>
-    
+
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
-    
+
     <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/techshop.css' %}">
 </head>
 <body class="bg-light">
+    <a class="visually-hidden-focusable" href="#contenu">Aller au contenu</a>
     {% include 'Nav.html' %}
     {% include '_toasts.html' %}
 
+    <main id="contenu">
     <div class="container my-5">
-        <h2 class="fw-bold mb-4 text-dark">
-            <i class="fas fa-shopping-basket me-2 text-primary"></i>Récapitulatif de votre commande
-        </h2>
+        <h1 class="fw-bold mb-4 text-dark h2">
+            <i class="fas fa-shopping-basket me-2 text-primary" aria-hidden="true"></i>Récapitulatif de votre commande
+        </h1>
 
         <div class="card shadow-0 border p-4 bg-white">
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
+                    <caption class="visually-hidden">Articles dans votre panier avec quantités et totaux</caption>
                     <thead class="table-light">
                         <tr>
-                            <th>Produit</th>
-                            <th class="text-center">Quantité</th>
-                            <th class="text-end">Prix Total</th>
+                            <th scope="col">Produit</th>
+                            <th scope="col" class="text-center">Quantité</th>
+                            <th scope="col" class="text-end">Prix Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,9 +43,9 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                     {% if item.article.image %}
-                                        <img src="{{ item.article.image.url }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                        <img src="{{ item.article.image.url }}" class="rounded me-3 ts-thumb" alt="{{ item.article.titre }}" loading="lazy" decoding="async" width="60" height="60">
                                     {% else %}
-                                        <img src="{% static 'images/default.jpg' %}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                        <img src="{% static 'images/default.jpg' %}" class="rounded me-3 ts-thumb" alt="Image par défaut pour {{ item.article.titre }}" loading="lazy" decoding="async" width="60" height="60">
                                     {% endif %}
                                     <div>
                                         <div class="fw-bold text-dark">{{ item.article.titre }}</div>
@@ -49,7 +54,7 @@
                                 </div>
                             </td>
                             <td class="text-center">
-                                <span class="badge badge-primary px-3 py-2" style="font-size: 0.9rem; border-radius: 20px;">
+                                <span class="badge bg-primary px-3 py-2" style="font-size: 0.9rem; border-radius: 20px;">
                                     x {{ item.quantite }}
                                 </span>
                             </td>
@@ -60,7 +65,7 @@
                         {% empty %}
                         <tr>
                             <td colspan="3" class="text-center py-5">
-                                <i class="fas fa-cart-arrow-down fa-3x mb-3 text-muted"></i>
+                                <i class="fas fa-cart-arrow-down fa-3x mb-3 text-muted" aria-hidden="true"></i>
                                 <p class="text-muted">Votre panier est actuellement vide.</p>
                                 <a href="{% url 'home' %}" class="btn btn-primary btn-sm mt-2">Commencer mes achats</a>
                             </td>
@@ -72,53 +77,56 @@
 
             <div class="d-flex justify-content-end mt-4 mb-5 border-top pt-3">
                 <div class="text-end">
-                    <h5 class="text-muted mb-1">Total à payer :</h5>
-                    <h2 class="text-danger fw-bold">{{ total_general }} <small style="font-size: 0.5em;">FCFA</small></h2>
+                    <h2 class="text-muted mb-1 h5">Total à payer :</h2>
+                    <p class="text-danger fw-bold h2">{{ total_general }} <small style="font-size: 0.5em;">FCFA</small></p>
                 </div>
             </div>
 
             <hr class="my-4">
 
+            {% if articles_panier %}
             <form action="{% url 'confirmer_commande' %}" method="POST">
                 {% csrf_token %}
-                <h4 class="fw-bold mb-4 text-dark"><i class="fas fa-truck me-2"></i>Informations de livraison</h4>
+                <h2 class="fw-bold mb-4 text-dark h4"><i class="fas fa-truck me-2" aria-hidden="true"></i>Informations de livraison</h2>
                 <div class="row g-4">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Nom du client</label>
+                        <label class="form-label fw-bold" for="liv-nom">Nom du client</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fas fa-user"></i></span>
-                            <input type="text" class="form-control bg-light" 
-                                   value="{{ user.username|default:'Invité' }}" readonly>
+                            <span class="input-group-text bg-light" aria-hidden="true"><i class="fas fa-user"></i></span>
+                            <input id="liv-nom" type="text" class="form-control bg-light"
+                                   value="{{ user.username|default:'Invité' }}" readonly autocomplete="username">
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Adresse de livraison au Cameroun</label>
+                        <label class="form-label fw-bold ts-required" for="liv-adresse">Adresse de livraison au Cameroun</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fas fa-location-dot"></i></span>
-                            <input type="text" name="adresse" class="form-control" placeholder="Quartier, Rue, Ville (ex: Akwa, Douala)" required>
+                            <span class="input-group-text bg-light" aria-hidden="true"><i class="fas fa-location-dot"></i></span>
+                            <input id="liv-adresse" type="text" name="adresse" class="form-control" placeholder="Quartier, Rue, Ville (ex: Akwa, Douala)" required autocomplete="street-address" maxlength="200">
                         </div>
                     </div>
                 </div>
 
-                <div class="text-end mt-5 pt-3 border-top">
+                <div class="ts-actions-end mt-5 pt-3 border-top">
                     <a href="{% url 'home' %}" class="btn btn-outline-dark btn-lg me-2 shadow-0 rounded-pill">
                         Continuer mes achats
                     </a>
 
-                    <a href="{% url 'annuler_panier' %}" class="btn btn-outline-danger btn-lg me-2 shadow-0 rounded-pill">
-                        <i class="fas fa-trash-alt me-1"></i> Annuler la commande
+                    <a href="{% url 'annuler_panier' %}" class="btn btn-outline-danger btn-lg me-2 shadow-0 rounded-pill" onclick="return confirm('Vider le panier et remettre les articles en stock ?');">
+                        <i class="fas fa-trash-alt me-1" aria-hidden="true"></i> Vider le panier
                     </a>
 
                     <button type="submit" class="btn btn-success btn-lg px-5 shadow-0 rounded-pill">
-                        <i class="fas fa-check-circle me-2"></i>Confirmer la commande
+                        <i class="fas fa-check-circle me-2" aria-hidden="true"></i>Confirmer la commande
                     </button>
                 </div>
             </form>
+            {% endif %}
         </div>
     </div>
+    </main>
 
     {% include 'footer.html' %}
 
-    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}" defer></script>
 </body>
 </html>

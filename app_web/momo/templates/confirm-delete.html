@@ -1,41 +1,41 @@
 <!DOCTYPE html>
-{% load static %} 
-<html lang="en">
+{% load static %}
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier l'article</title>
+    <meta name="description" content="Confirmez la suppression de votre article {{ object.titre }}.">
+    <title>Supprimer {{ object.titre }} ? — Tech.Shop</title>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/techshop.css' %}">
 </head>
 <body>
+    <a class="visually-hidden-focusable" href="#contenu">Aller au contenu</a>
     {% include 'navmomo.html'%}
     {% include '_toasts.html' %}
 
-   
-     {% block content %}
+     <main id="contenu">
             <div class="container my-5">
-            <h2>Supprimer l'article ?</h2>
-            <p>Es-tu sûr de vouloir supprimer "<strong>{{ object.titre }}</strong>" ?</p>
-            <form method="post">
+            <div class="row justify-content-center">
+            <div class="col-md-6">
+            <div class="card border-danger p-4" role="alertdialog" aria-labelledby="del-title" aria-describedby="del-desc">
+            <h1 id="del-title" class="h2">Supprimer l'article ?</h1>
+            <p id="del-desc">Êtes-vous sûr de vouloir supprimer « <strong>{{ object.titre }}</strong> » ? Cette action est définitive.</p>
+            <form method="post" class="ts-actions">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+                <button type="submit" class="btn btn-danger"><i class="fas fa-trash me-1" aria-hidden="true"></i>Confirmer la suppression</button>
                 <a href="{% url 'my-article' %}" class="btn btn-secondary">Annuler</a>
             </form>
+            </div>
+            </div>
+            </div>
         </div>
+     </main>
 
-     {% endblock %}
-
-   
-
-    
-
-   
-
-
-
-    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}"></script>
+    {% include 'footer.html' %}
+    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}" defer></script>
 
 </body>
 </html>

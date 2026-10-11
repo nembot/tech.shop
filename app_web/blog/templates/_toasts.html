@@ -53,13 +53,15 @@
 @keyframes toastOut{to{opacity:0;transform:translateX(60px) scale(.97)}}
 @keyframes toastBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
 @media (max-width:576px){.toast-stack{top:12px;right:12px;left:12px;width:auto}}
+@media (prefers-reduced-motion: reduce){.toast-notif,.toast-progress span{animation:none !important}}
 </style>
 
 <script>
 (function () {
   var stack = document.getElementById('toastStack');
   if (!stack) return;
-  var DURATION = 5000;
+  var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var DURATION = REDUCED ? 8000 : 7000;
   function dismiss(el) {
     if (!el || el.classList.contains('toast-out')) return;
     el.classList.add('toast-out');

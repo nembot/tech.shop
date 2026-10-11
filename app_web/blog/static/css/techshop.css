@@ -1,0 +1,143 @@
+/* Tech.Shop — design tokens + correctifs audit $impeccable.
+   Source unique : boutique (blog) + espace vendeur (momo).
+   Palette AA : teal assombri pour le texte, bleu MDB pour l'action. */
+:root {
+  --ts-primary: #0d6efd;
+  --ts-primary-dark: #0b5ed7;
+  --ts-success: #198754;
+  --ts-danger: #dc3545;
+  --ts-warning: #ffc107;
+  --ts-info: #0dcaf0;
+  --ts-teal: #00755e; /* #009579 assombri : contraste ~5.9:1 sur blanc */
+  --ts-teal-dark: #005e4c;
+  --ts-ink: #212529;
+  --ts-muted: #6c757d;
+  --ts-line: #e9ecef;
+  --ts-bg-soft: #f8f9fa;
+  --ts-radius: 12px;
+  --ts-touch: 44px;
+  --ts-focus: #0d6efd;
+}
+
+html { scroll-behavior: smooth; }
+body { color: var(--ts-ink); }
+
+/* Focus visible partout (remplace les outline:none supprimés) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--ts-focus);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Cibles tactiles : 44px mini, btn-sm 40px toléré avec largeur mini */
+.btn {
+  min-height: var(--ts-touch);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+}
+.btn-sm {
+  min-height: 40px;
+  min-width: 44px;
+}
+.btn-floating.btn-sm { min-width: 44px; min-height: 44px; }
+
+/* Évite le scroll horizontal des barres d'actions */
+.ts-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+.ts-actions-end {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  justify-content: flex-end;
+}
+@media (max-width: 576px) {
+  .ts-actions-end .btn { flex: 1 1 100%; }
+}
+
+/* Recherche navbar : passe à la ligne sur mobile */
+.ts-search { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.ts-search .form-control { min-width: 160px; flex: 1 1 160px; }
+.ts-search .form-select { flex: 1 1 150px; max-width: 220px; }
+
+/* Tables admin : en-têtes lisibles, actions groupées */
+.table th { white-space: nowrap; }
+.ts-row-actions { display: flex; flex-wrap: wrap; gap: .35rem; }
+.ts-row-actions .btn { margin: 0; }
+
+/* Cartes boutique : images stables (anti-CLS), prix lisible */
+.ts-card-img {
+  height: 200px;
+  width: 100%;
+  object-fit: contain;
+  padding: 15px;
+  background: #fff;
+}
+.ts-price { font-weight: 800; color: var(--ts-primary); }
+.ts-thumb { width: 60px; height: 60px; object-fit: cover; }
+.ts-similar-thumb { width: 70px; height: 70px; object-fit: cover; }
+
+/* Auth : remplace les <style> inline dupliqués */
+.ts-auth-body {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 16px;
+  background: var(--ts-bg-soft);
+}
+.ts-auth-card {
+  width: 100%;
+  max-width: 450px;
+  background: #fff;
+  border-radius: var(--ts-radius);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, .12);
+  padding: 30px;
+  border: 1px solid var(--ts-line);
+}
+.ts-auth-card h1 { margin: 0 0 20px; font-size: 1.6rem; }
+.ts-auth-card label { display: block; padding: 10px 0 4px; color: var(--ts-teal); font-weight: 600; }
+.ts-auth-card input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+.ts-auth-card input[aria-invalid="true"] { border-color: var(--ts-danger); }
+.ts-auth-card .btn-auth {
+  color: #fff;
+  background: var(--ts-teal);
+  width: 100%;
+  padding: 10px;
+  font-size: 1.05rem;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
+  min-height: var(--ts-touch);
+}
+.ts-auth-card .btn-auth:hover { background: var(--ts-teal-dark); }
+.ts-auth-link { text-align: center; margin-top: 20px; }
+.ts-auth-link a { color: var(--ts-teal); font-weight: 600; }
+.ts-field-error { color: var(--ts-danger); font-size: .85rem; margin: 2px 0 8px; }
+.ts-help { font-size: .8rem; color: var(--ts-muted); margin-top: 4px; }
+
+/* Formulaires vendeur */
+.ts-required::after { content: " *"; color: var(--ts-danger); font-weight: 700; }
+
+/* Toasts : respecte prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .toast-notif, .toast-progress span { animation: none !important; }
+}

@@ -24,5 +24,6 @@ class ArticleForm(forms.ModelForm):
             'desc': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
             'prix': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 5000'}),
             'quantite': forms.NumberInput(attrs={'class': 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'is_published': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }

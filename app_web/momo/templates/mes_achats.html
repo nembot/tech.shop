@@ -1,33 +1,34 @@
 {% extends 'base.html' %}
+{% block title %}Mes achats — Tech.Shop{% endblock %}
 {% block content %}
 <div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold"><i class="fas fa-shopping-bag me-2 text-dark"></i>Mes Achats</h2>
-        <a href="{% url 'mes_commandes' %}" class="btn btn-outline-primary btn-rounded">Voir mes Ventes</a>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h1 class="fw-bold h2"><i class="fas fa-shopping-bag me-2 text-dark" aria-hidden="true"></i>Mes Achats</h1>
+        <a href="{% url 'mes_commandes' %}" class="btn btn-outline-primary btn-rounded">Voir mes ventes</a>
     </div>
 
-    <div class="row mb-5 text-center">
+    <div class="row mb-5 text-center g-3">
         <div class="col-md-4">
-            <div class="card shadow-0 border-0 bg-dark text-white rounded-4">
+            <div class="card shadow-0 border-0 bg-dark text-white rounded-4 h-100">
                 <div class="card-body">
                     <p class="text-uppercase small mb-2">Commandes passées</p>
-                    <h2 class="fw-bold">{{ nb_commandes }}</h2>
+                    <p class="fw-bold display-6 mb-0">{{ nb_commandes }}</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card shadow-0 border-0 bg-warning text-dark rounded-4">
+            <div class="card shadow-0 border-0 bg-warning text-dark rounded-4 h-100">
                 <div class="card-body">
                     <p class="text-uppercase small mb-2">Total dépensé</p>
-                    <h2 class="fw-bold">{{ total_depense }} <small>FCFA</small></h2>
+                    <p class="fw-bold display-6 mb-0">{{ total_depense }} <small>FCFA</small></p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card shadow-0 border-0 bg-light text-dark rounded-4">
+            <div class="card shadow-0 border-0 bg-light text-dark rounded-4 h-100">
                 <div class="card-body">
                     <p class="text-uppercase small mb-2">Articles commandés</p>
-                    <h2 class="fw-bold">{{ nb_articles }}</h2>
+                    <p class="fw-bold display-6 mb-0">{{ nb_articles }}</p>
                 </div>
             </div>
         </div>
@@ -37,45 +38,50 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
+                    <caption class="visually-hidden">Vos commandes avec articles, total et statut</caption>
                     <thead class="table-light">
                         <tr>
-                            <th>N° Commande</th>
-                            <th>Articles</th>
-                            <th>Total</th>
-                            <th>Statut</th>
-                            <th class="text-center">Action</th>
+                            <th scope="col">N° Commande</th>
+                            <th scope="col">Articles</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Statut</th>
+                            <th scope="col" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for achat in mes_achats %}
                         <tr>
-                            <td><span class="fw-bold">#{{ achat.id }}</span></td>
+                            <td><span class="fw-bold">#{{ achat.id }}</span><br><small class="text-muted">{{ achat.date_commande|date:"d M Y" }}</small></td>
                             <td>
                                 <ul class="list-unstyled mb-0 small text-muted">
                                     {% for item in achat.items.all %}
-                                        <li><i class="fas fa-check-circle me-1"></i>{{ item.article.titre }} (x{{ item.quantite }})</li>
+                                        <li><i class="fas fa-check-circle me-1" aria-hidden="true"></i>{{ item.article.titre }} (x{{ item.quantite }})</li>
                                     {% endfor %}
                                 </ul>
                             </td>
                             <td class="fw-bold text-danger">{{ achat.total_final }} FCFA</td>
                             <td>
                                 {% if achat.complet %}
-                                    <span class="badge rounded-pill badge-success">Confirmé</span>
+                                    <span class="badge rounded-pill bg-success">Confirmé</span>
                                 {% else %}
-                                    <span class="badge rounded-pill badge-info">En attente</span>
+                                    <span class="badge rounded-pill bg-info text-dark">En attente</span>
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                <a href="{% url 'supprimer_achat' achat.id %}" class="btn btn-sm btn-link text-danger ripple-surface">
-                                    <i class="fas fa-times-circle fa-lg"></i> Annuler
-                                </a>
+                                <form action="{% url 'supprimer_achat' achat.id %}" method="post" class="d-inline" onsubmit="return confirm('Annuler la commande #{{ achat.id }} ?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-link text-danger ripple-surface" aria-label="Annuler la commande {{ achat.id }}">
+                                        <i class="fas fa-times-circle fa-lg" aria-hidden="true"></i> Annuler
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
                             <td colspan="5" class="text-center py-5">
-                                <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png" width="80" class="mb-3 opacity-50">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png" width="80" height="80" class="mb-3 opacity-50" alt="" loading="lazy" decoding="async">
                                 <p class="text-muted">Vous n'avez pas encore passé de commande.</p>
+                                <a href="{% url 'home' %}" class="btn btn-primary btn-sm">Découvrir la boutique</a>
                             </td>
                         </tr>
                         {% endfor %}
