@@ -1,0 +1,98 @@
+{# Système de notifications moderne : toasts empilés, auto-dismiss, responsive. #}
+{# Usage : {% include '_toasts.html' %} juste après <body> ou après la navbar. #}
+{% if messages %}
+<div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="false">
+  {% for message in messages %}
+  {% with tags=message.tags|default:"info" %}
+  <div class="toast-notif toast-{% if 'error' in tags or 'danger' in tags %}error{% elif 'success' in tags %}success{% elif 'warning' in tags %}warning{% else %}info{% endif %}" role="alert">
+    <div class="toast-accent"></div>
+    <div class="toast-icon">
+      {% if 'error' in tags or 'danger' in tags %}<i class="fas fa-circle-exclamation"></i>
+      {% elif 'success' in tags %}<i class="fas fa-circle-check"></i>
+      {% elif 'warning' in tags %}<i class="fas fa-triangle-exclamation"></i>
+      {% else %}<i class="fas fa-circle-info"></i>{% endif %}
+    </div>
+    <div class="toast-body">
+      <p class="toast-title">
+        {% if 'error' in tags or 'danger' in tags %}Erreur
+        {% elif 'success' in tags %}Succès
+        {% elif 'warning' in tags %}Attention
+        {% else %}Info{% endif %}
+      </p>
+      <p class="toast-msg">{{ message }}</p>
+    </div>
+    <button type="button" class="toast-close" aria-label="Fermer">&times;</button>
+    <div class="toast-progress"><span></span></div>
+  </div>
+  {% endwith %}
+  {% endfor %}
+</div>
+{% endif %}
+
+<style>
+.toast-stack{position:fixed;top:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:12px;width:min(370px,calc(100vw - 36px));pointer-events:none}
+.toast-notif{pointer-events:auto;position:relative;display:flex;align-items:flex-start;gap:12px;background:#fff;border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.16);padding:14px 40px 14px 14px;overflow:hidden;animation:toastIn .35s cubic-bezier(.21,1.02,.73,1) both;border:1px solid rgba(0,0,0,.06)}
+.toast-notif.toast-out{animation:toastOut .3s ease both}
+.toast-accent{position:absolute;left:0;top:0;bottom:0;width:5px}
+.toast-success .toast-accent{background:#198754}.toast-error .toast-accent{background:#dc3545}
+.toast-warning .toast-accent{background:#f0a500}.toast-info .toast-accent{background:#0d6efd}
+.toast-icon{flex:0 0 36px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff}
+.toast-success .toast-icon{background:#198754}.toast-error .toast-icon{background:#dc3545}
+.toast-warning .toast-icon{background:#f0a500}.toast-info .toast-icon{background:#0d6efd}
+.toast-body{flex:1;min-width:0}
+.toast-title{margin:0 0 2px;font-weight:700;font-size:.85rem;color:#212529}
+.toast-msg{margin:0;font-size:.85rem;line-height:1.45;color:#495057;word-break:break-word}
+.toast-close{position:absolute;top:6px;right:8px;border:0;background:transparent;font-size:22px;line-height:1;color:#adb5bd;cursor:pointer;padding:4px 8px}
+.toast-close:hover{color:#212529}
+.toast-progress{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(0,0,0,.08)}
+.toast-progress span{display:block;height:100%;width:100%;transform-origin:left;animation:toastBar 5s linear forwards}
+.toast-success .toast-progress span{background:#198754}.toast-error .toast-progress span{background:#dc3545}
+.toast-warning .toast-progress span{background:#f0a500}.toast-info .toast-progress span{background:#0d6efd}
+.toast-notif:hover .toast-progress span{animation-play-state:paused}
+@keyframes toastIn{from{opacity:0;transform:translateX(60px) scale(.97)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(60px) scale(.97)}}
+@keyframes toastBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media (max-width:576px){.toast-stack{top:12px;right:12px;left:12px;width:auto}}
+</style>
+
+<script>
+(function () {
+  var stack = document.getElementById('toastStack');
+  if (!stack) return;
+  var DURATION = 5000;
+  function dismiss(el) {
+    if (!el || el.classList.contains('toast-out')) return;
+    el.classList.add('toast-out');
+    setTimeout(function () { el.remove(); }, 300);
+  }
+  stack.querySelectorAll('.toast-notif').forEach(function (el) {
+    var timer = setTimeout(function () { dismiss(el); }, DURATION);
+    el.querySelector('.toast-close').addEventListener('click', function () {
+      clearTimeout(timer); dismiss(el);
+    });
+    el.addEventListener('mouseenter', function () { clearTimeout(timer); });
+    el.addEventListener('mouseleave', function () {
+      timer = setTimeout(function () { dismiss(el); }, 2000);
+    });
+  });
+  // API JS réutilisable : window.notify('success'|'error'|'warning'|'info', 'Titre', 'Message')
+  window.notify = function (type, title, msg) {
+    var icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', warning: 'fa-triangle-exclamation', info: 'fa-circle-info' };
+    type = icons[type] ? type : 'info';
+    var host = document.getElementById('toastStack') || (function () {
+      var d = document.createElement('div'); d.className = 'toast-stack'; d.id = 'toastStack';
+      document.body.appendChild(d); return d;
+    })();
+    var el = document.createElement('div');
+    el.className = 'toast-notif toast-' + type; el.setAttribute('role', 'alert');
+    el.innerHTML = '<div class="toast-accent"></div><div class="toast-icon"><i class="fas ' + icons[type] + '"></i></div>' +
+      '<div class="toast-body"><p class="toast-title"></p><p class="toast-msg"></p></div>' +
+      '<button type="button" class="toast-close" aria-label="Fermer">&times;</button><div class="toast-progress"><span></span></div>';
+    el.querySelector('.toast-title').textContent = title || 'Info';
+    el.querySelector('.toast-msg').textContent = msg || '';
+    host.appendChild(el);
+    var t = setTimeout(function () { dismiss(el); }, DURATION);
+    el.querySelector('.toast-close').addEventListener('click', function () { clearTimeout(t); dismiss(el); });
+  };
+})();
+</script>

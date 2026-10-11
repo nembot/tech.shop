@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+{% load static %} 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+    
+    <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <!-- Container wrapper -->
+  <div class="container-fluid">
+    <!-- Toggle button -->
+    <button
+      data-mdb-collapse-init
+      class="navbar-toggler"
+      type="button"
+      data-mdb-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Collapsible wrapper -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <!-- Navbar brand -->
+
+      <!-- Left links -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="navbar-brand" href="{% url 'home' %}">Tech.Shop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'mes_commandes' %}">Mes commandes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'mes_achats' %}">Mes achats</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'my-article' %}">Mes articles</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'statistiques' %}">Statistiques</a>
+        </li>
+      </ul>
+      <!-- Left links -->
+    </div>
+    <div class="d-flex align-items-center">
+
+  {% if user.is_authenticated %}
+    <div class="me-3">
+       <span class="text-dark">Bonjour, <strong>{{ user.username }}</strong></span>
+    </div>
+  {% endif %}
+
+  <div class="dropdown">
+    <a
+      data-mdb-dropdown-init
+      class="dropdown-toggle d-flex align-items-center hidden-arrow"
+      href="#"
+      id="navbarDropdownMenuAvatar"
+      role="button"
+      aria-expanded="false"
+    >
+      <img
+        src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+        class="rounded-circle"
+        height="25"
+        alt="Avatar"
+        loading="lazy"
+      />
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+      <li><a class="dropdown-item" href="#">Mon profil</a></li>
+      <li><a class="dropdown-item" href="#">Paramètres</a></li>
+      <li><a class="dropdown-item" href="#">Déconnexion</a></li>
+    </ul>
+  </div>
+</div>
+  <!-- Container wrapper -->
+</nav>
+<!-- Navbar -->
+
+<script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+</html>

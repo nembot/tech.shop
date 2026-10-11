@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+{% load static %} 
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ article.titre }} | Détails de l'annonce</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+    
+    <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    {% include 'Nav.html' %} 
+    {% include '_toasts.html' %}
+
+    <div class="container my-5">
+        <div class="row">
+            
+            <div class="col-md-8">
+                <nav aria-label="breadcrumb" class="mb-4">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                    <li class="breadcrumb-item active text-primary">{{ article.category.nom }}</li>
+                  </ol>
+                </nav>
+
+                <h1 class="fw-bold mb-2">{{ article.titre }}</h1>
+                
+                <div class="d-flex align-items-center mb-4 text-muted small">
+                    <span class="me-3">
+                        <i class="fas fa-user-circle me-1"></i> Publié par : <strong>{{ article.user.username|default:"Anonyme" }}</strong>
+                    </span>
+                    <span>
+                        <i class="far fa-calendar-alt me-1"></i> {{ article.created_at|date:"d M Y" }}
+                    </span>
+                </div>
+
+                <div class="bg-white rounded text-center p-3 mb-4 shadow-sm" style="border: 1px solid #eee;">
+                    {% if article.image %}
+                        <img src="{{ article.image.url }}" 
+                             alt="{{ article.titre }}" 
+                             class="img-fluid rounded shadow-sm" 
+                             style="max-height: 400px; width: auto; object-fit: contain;">
+                    {% else %}
+                        <img src="{% static 'images/default.jpg' %}" 
+                             alt="Image par défaut" 
+                             class="img-fluid rounded shadow-sm" 
+                             style="max-height: 400px; width: auto; object-fit: contain;">
+                    {% endif %}
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="text-primary fw-bold mb-0">
+                            {{ article.prix }} <small style="font-size: 0.6em;">FCFA</small>
+                        </h2>
+                        {% if article.quantite > 0 %}
+                            <span class="badge badge-success">{{ article.quantite }} en stock</span>
+                        {% else %}
+                            <span class="badge badge-danger">Rupture de stock</span>
+                        {% endif %}
+                    </div>
+
+                    {% if article.quantite > 0 %}
+                        <a href="#" class="btn btn-danger btn-lg shadow-0">
+                            <i class="fas fa-shopping-cart me-2"></i>Payer maintenant
+                        </a>
+                    {% else %}
+                        <button class="btn btn-secondary btn-lg shadow-0" disabled>Indisponible</button>
+                    {% endif %}
+                </div>
+
+                <hr>
+
+                <h5 class="fw-bold mt-4">Description</h5>
+                <p class="text-dark mb-5" style="white-space: pre-line; line-height: 1.7;">
+                    {{ article.desc }}
+                </p>
+
+                <hr>
+
+                <div class="mt-5">
+                    <div class="d-flex align-items-center mb-4">
+                        <form action="{% url 'liker_article' article.id %}" method="POST" class="me-3">
+                            {% csrf_token %}
+                            {% if user.is_authenticated %}
+                                {% if user in article.likes.all %}
+                                    <button type="submit" class="btn btn-primary shadow-0">
+                                        <i class="fas fa-thumbs-up me-1"></i> {{ article.total_likes }} Aimé
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-outline-primary shadow-0">
+                                        <i class="far fa-thumbs-up me-1"></i> {{ article.total_likes }} Like
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                <a href="{% url 'connexion' %}" class="btn btn-outline-primary shadow-0">
+                                    <i class="far fa-thumbs-up me-1"></i> {{ article.total_likes }} Like
+                                </a>
+                            {% endif %}
+                        </form>
+                        <span class="text-muted small"><i class="far fa-comment me-1"></i> {{ article.commentaires.count }} avis</span>
+                    </div>
+
+                    <div class="card shadow-0 border-0 bg-light p-4 rounded">
+                        <h5 class="fw-bold mb-4">Avis des clients</h5>
+
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'ajouter_commentaire' article.id %}" method="POST" class="mb-4">
+                                {% csrf_token %}
+                                <div class="form-outline mb-3 bg-white rounded" data-mdb-input-init>
+                                    <textarea class="form-control" name="contenu" rows="3" required></textarea>
+                                    <label class="form-label">Que pensez-vous de cet article ?</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm shadow-0">Publier mon avis</button>
+                            </form>
+                        {% else %}
+                            <div class="alert alert-info py-2 small">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <a href="{% url 'connexion' %}" class="fw-bold">Connectez-vous</a> pour laisser un avis.
+                            </div>
+                        {% endif %}
+
+                        <div class="comment-list mt-4">
+                            {% for com in article.commentaires.all %}
+                                    <div class="d-flex mb-3">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-user-circle fa-2x text-secondary"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <div class="bg-white p-3 rounded shadow-sm border">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <h6 class="fw-bold mb-0" style="font-size: 0.9rem;">{{ com.user.username }}</h6>
+                                                    
+                                                    {% if user.is_authenticated and com.user == user %}
+                                                        <a href="{% url 'supprimer_commentaire' com.id %}" 
+                                                        class="text-danger" 
+                                                        onclick="return confirm('Supprimer ce commentaire ?');"
+                                                        title="Supprimer">
+                                                            <i class="fas fa-trash-alt small"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                                <small class="text-muted d-block mb-2" style="font-size: 0.7rem;">{{ com.created_at|date:"d/m/Y H:i" }}</small>
+                                                <p class="text-muted mb-0" style="font-size: 0.85rem;">{{ com.contenu }}</p>
+                                            </div>
+                                        </div>
+                                      </div>
+                                   {% empty %}
+                                      <p class="text-muted small text-center italic">Aucun avis pour le moment.</p>
+                                {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-0 border p-3 bg-white position-sticky" style="top: 20px;">
+                    <h5 class="mb-4 fw-bold border-bottom pb-2">Annonces similaires</h5>
+                    
+                    <div class="row">
+                        {% for art in aer %}
+                        <div class="col-12 mb-3">
+                            <a href="{% url 'detail' art.id %}" class="text-decoration-none text-dark d-flex align-items-center p-2 rounded hover-light border" style="transition: 0.3s;">
+                                <div class="flex-shrink-0">
+                                    {% if art.image %}
+                                        <img src="{{ art.image.url }}" alt="" class="rounded" style="width: 70px; height: 70px; object-fit: cover;">
+                                    {% else %}
+                                        <img src="{% static 'images/default.jpg' %}" alt="" class="rounded" style="width: 70px; height: 70px; object-fit: cover;">
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0 fw-bold text-truncate" style="max-width: 150px; font-size: 0.9rem;">{{ art.titre }}</h6>
+                                    <p class="text-primary fw-bold mb-0" style="font-size: 0.85rem;">{{ art.prix }} <small>FCFA</small></p>
+                                    <small class="text-muted" style="font-size: 0.75rem;">{{ art.desc|truncatewords:3 }}</small>
+                                </div>
+                            </a>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-3">
+                            <p class="text-muted small">Aucune autre annonce.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% include 'footer.html' %} 
+
+    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}"></script>
+</body>
+</html>

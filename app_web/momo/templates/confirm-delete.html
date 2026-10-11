@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static %} 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier l'article</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    {% include 'navmomo.html'%}
+    {% include '_toasts.html' %}
+
+   
+     {% block content %}
+            <div class="container my-5">
+            <h2>Supprimer l'article ?</h2>
+            <p>Es-tu sûr de vouloir supprimer "<strong>{{ object.titre }}</strong>" ?</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+                <a href="{% url 'my-article' %}" class="btn btn-secondary">Annuler</a>
+            </form>
+        </div>
+
+     {% endblock %}
+
+   
+
+    
+
+   
+
+
+
+    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}"></script>
+
+</body>
+</html>

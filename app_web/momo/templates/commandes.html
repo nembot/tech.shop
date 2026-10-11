@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+    <h2 class="fw-bold mb-4">Tableau de bord des ventes</h2>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white text-center p-3 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                    <h5 class="card-title text-uppercase small">Commandes reçues</h5>
+                    <h2 class="display-6 fw-bold">{{ nb_commandes_ventes }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white text-center p-3 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-wallet fa-3x mb-3"></i>
+                    <h5 class="card-title text-uppercase small">Revenu Total</h5>
+                    <h2 class="display-6 fw-bold">{{ total_revenu }} <small>FCFA</small></h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white text-center p-3 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-box-open fa-3x mb-3"></i>
+                    <h5 class="card-title text-uppercase small">Produits vendus</h5>
+                    <h2 class="display-6 fw-bold">{{ nb_produits_vendus }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-0 border">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">Détails des ventes</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Client</th>
+                            <th>Article</th>
+                            <th>Lieu de livraison</th>
+                            <th>Date</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vente in mes_ventes %}
+                        <tr>
+                            <td>{{ vente.commande.client.username }}</td>
+                            <td><strong>{{ vente.article.titre }}</strong></td>
+                            <td>{{ vente.commande.adresse_livraison }}</td>
+                            <td>{{ vente.date_ajoute|date:"d M Y" }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'supprimer_vente' vente.id %}" class="btn btn-sm btn-floating btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

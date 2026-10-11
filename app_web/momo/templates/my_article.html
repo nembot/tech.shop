@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+{% load static %} 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mes articles</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+    
+    <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    {% include 'navmomo.html'%}
+    {% include '_toasts.html' %}
+
+    {% block content %}
+     <div class="container">
+        <div class="row">
+
+             <div class="col-md-12 text-center my-3">
+                <h2> Mes articles </h2>
+                <p class="text-muted small mb-0">
+                    <span class="badge badge-primary">{{ nb_total }} au total</span>
+                    <span class="badge badge-success">{{ nb_publies }} publiés</span>
+                    <span class="badge badge-secondary">{{ nb_depublies }} dépubliés</span>
+                </p>
+             </div>
+              <div class="col-md-12">
+                 <a href="{% url 'ajout-article' %}" class="btn btn-primary float-right my-3">
+                    <i class="fas fa-plus"></i> Ajouter article 
+                </a>
+             </div>
+
+
+            <div class="col-md-12">
+                
+                {% if list %}
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="h5">Titre</th>
+                                    <th class="h5">Description</th>
+                                    <th class="h5">Quantite</th>
+                                    <th class="h5">Statut</th>
+                                    <th class="h5">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for article in list %}
+                                <tr>
+                                 <td><a href="{% url 'detail' article.id %}" class="h6 text-primary">{{article.titre}}</a></td>
+                                 
+                                 <td style="max-width: 300px;"><p class="text-truncate">{{article.desc}}</p></td>
+
+                                 <td> <h4 class="h6 text-primary">{{article.quantite}} </h4></td>
+
+                                  <td>
+                                     {% if article.is_published %}
+                                        <span class="badge badge-success">Publié</span>
+                                     {% else %}
+                                        <span class="badge badge-secondary">Dépublié</span>
+                                     {% endif %}
+                                  </td>
+                                  
+                                  <td>
+                                     <a href="{% url 'detail' article.id %}" class="btn btn-primary btn-sm" title="Voir le détail">
+                                         <i class="fas fa-eye"></i> Détail
+                                     </a>
+                                     {% if article.is_published %}
+                                        <a href="{% url 'toggle-publish' article.id %}" class="btn btn-warning btn-sm" title="Dépublier : masquer de la boutique">
+                                            <i class="fas fa-eye-slash"></i> Dépublier
+                                        </a>
+                                     {% else %}
+                                        <a href="{% url 'toggle-publish' article.id %}" class="btn btn-success btn-sm" title="Publier : rendre visible en boutique">
+                                            <i class="fas fa-globe"></i> Publier
+                                        </a>
+                                     {% endif %}
+                                     <a href="{% url 'modifier-article' article.id %}" class="btn btn-info btn-sm" title="Modifier">
+                                         <i class="fas fa-edit"></i>
+                                     </a>
+
+                                     <a href="{% url 'supprimer-article' article.id %}" class="btn btn-danger btn-sm" title="Supprimer">
+                                         <i class="fas fa-trash"></i>
+                                     </a>
+                                  </td>
+                                 </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {% else %}
+                <div class="text-center my-5">
+                    <h3> Vous n'avez pas encore d'articles </h3>
+                    <p class="text-muted">Commencez par en créer un en cliquant sur le bouton ajouter.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+     </div>
+    {% endblock %}
+
+    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="fas fa-shopping-bag me-2 text-dark"></i>Mes Achats</h2>
+        <a href="{% url 'mes_commandes' %}" class="btn btn-outline-primary btn-rounded">Voir mes Ventes</a>
+    </div>
+
+    <div class="row mb-5 text-center">
+        <div class="col-md-4">
+            <div class="card shadow-0 border-0 bg-dark text-white rounded-4">
+                <div class="card-body">
+                    <p class="text-uppercase small mb-2">Commandes passées</p>
+                    <h2 class="fw-bold">{{ nb_commandes }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-0 border-0 bg-warning text-dark rounded-4">
+                <div class="card-body">
+                    <p class="text-uppercase small mb-2">Total dépensé</p>
+                    <h2 class="fw-bold">{{ total_depense }} <small>FCFA</small></h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-0 border-0 bg-light text-dark rounded-4">
+                <div class="card-body">
+                    <p class="text-uppercase small mb-2">Articles commandés</p>
+                    <h2 class="fw-bold">{{ nb_articles }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-0 border rounded-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>N° Commande</th>
+                            <th>Articles</th>
+                            <th>Total</th>
+                            <th>Statut</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for achat in mes_achats %}
+                        <tr>
+                            <td><span class="fw-bold">#{{ achat.id }}</span></td>
+                            <td>
+                                <ul class="list-unstyled mb-0 small text-muted">
+                                    {% for item in achat.items.all %}
+                                        <li><i class="fas fa-check-circle me-1"></i>{{ item.article.titre }} (x{{ item.quantite }})</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td class="fw-bold text-danger">{{ achat.total_final }} FCFA</td>
+                            <td>
+                                {% if achat.complet %}
+                                    <span class="badge rounded-pill badge-success">Confirmé</span>
+                                {% else %}
+                                    <span class="badge rounded-pill badge-info">En attente</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <a href="{% url 'supprimer_achat' achat.id %}" class="btn btn-sm btn-link text-danger ripple-surface">
+                                    <i class="fas fa-times-circle fa-lg"></i> Annuler
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png" width="80" class="mb-3 opacity-50">
+                                <p class="text-muted">Vous n'avez pas encore passé de commande.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
