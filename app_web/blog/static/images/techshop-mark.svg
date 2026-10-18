@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Tech.Shop</title>
+  <desc id="desc">Monogramme abstrait T et S, avec point d'échange orange.</desc>
+  <path fill="#0B1F4D" fill-rule="evenodd" d="M30 25h190c17 0 30 13 30 30s-13 30-30 30h-67v71c0 18-14 32-32 32s-32-14-32-32V85H30C13 85 0 72 0 55s13-30 30-30ZM112 115a24 24 0 1 0 0 48 24 24 0 1 0 0-48Z"/>
+  <path fill="#165DFF" fill-rule="evenodd" d="M124 99h43c41 0 75 34 75 75s-34 75-75 75H42c-17 0-31-14-31-31s14-31 31-31h125c14 0 26-12 26-26s-12-26-26-26h-43V99Zm-12 16a24 24 0 1 0 0 48 24 24 0 1 0 0-48Z"/>
+  <circle cx="85" cy="139" r="15" fill="#FF8A00"/>
+</svg>

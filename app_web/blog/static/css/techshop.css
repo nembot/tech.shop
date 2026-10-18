@@ -22,6 +22,27 @@
 html { scroll-behavior: smooth; }
 body { color: var(--ts-ink); }
 
+/* Identité : monogramme T/S et logotype. */
+.ts-navbar {
+  border-bottom: 1px solid var(--ts-line);
+}
+.ts-brand {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  white-space: nowrap;
+}
+.ts-brand-logo {
+  display: block;
+  width: 120px;
+  height: auto;
+  max-height: 41px;
+}
+
+@media (max-width: 991.98px) {
+  .ts-navbar .navbar-collapse { padding-top: .8rem; }
+}
+
 /* Focus visible partout (remplace les outline:none supprimés) */
 a:focus-visible,
 button:focus-visible,

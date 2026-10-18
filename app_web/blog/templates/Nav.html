@@ -1,4 +1,5 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary" aria-label="Navigation boutique">
+{% load static %}
+<nav class="navbar navbar-expand-lg bg-body-tertiary ts-navbar" aria-label="Navigation boutique">
 <div class="container-fluid">
 <button
 data-mdb-collapse-init
@@ -11,7 +12,9 @@ aria-label="Ouvrir la navigation"
 >
 <i class="fas fa-bars" aria-hidden="true"></i>
 </button>
-<a class="navbar-brand" href="{% url 'home' %}">Tech.Shop</a>
+<a class="navbar-brand ts-brand" href="{% url 'home' %}" aria-label="Tech.Shop, accueil">
+    <img class="ts-brand-logo" src="{% static 'images/techshop-logo.svg' %}" width="120" height="41" alt="" aria-hidden="true">
+</a>
 <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
     <li class="nav-item">

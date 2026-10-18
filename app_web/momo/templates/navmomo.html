@@ -1,6 +1,6 @@
 {% load static %}
 <!-- Fragment navbar vendeur : inclus dans base.html (pas de <html>/<head>/<body> ici) -->
-<nav class="navbar navbar-expand-lg bg-body-tertiary" aria-label="Navigation vendeur">
+<nav class="navbar navbar-expand-lg bg-body-tertiary ts-navbar" aria-label="Navigation vendeur">
   <div class="container-fluid">
     <button
       data-mdb-collapse-init
@@ -17,7 +17,9 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="navbar-brand" href="{% url 'home' %}">Tech.Shop</a>
+          <a class="navbar-brand ts-brand" href="{% url 'home' %}" aria-label="Tech.Shop, accueil">
+            <img class="ts-brand-logo" src="{% static 'images/techshop-logo.svg' %}" width="120" height="41" alt="" aria-hidden="true">
+          </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'mes_commandes' %}">Mes ventes</a>
